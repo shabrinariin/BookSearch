@@ -70,7 +70,7 @@
                                     <form action="{{ route('deletebook',[$books->id])}}" method="POST" class="d-inline">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" onclick="return confirm('Are you sure to delete this book?')" class="btn btn-danger" title="delete"><i class="fa fa-trash"></i></button>
+                                        <button type="submit" onclick="return confirm('Are you sure to delete this {{$books->name}} book?')" class="btn btn-danger" title="delete"><i class="fa fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>

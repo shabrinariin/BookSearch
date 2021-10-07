@@ -16,7 +16,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <form class="row g-3">
+                    <div class="row g-3">
                         @foreach ($booksDTL as $deTailsB)
                         <div class="col-md-6">
                             <img src="{{ asset('Uploads/'.$deTailsB->images) }}" width="270px" height="370px" title="{{ $deTailsB->images }}"/>
@@ -57,12 +57,12 @@
                             <a href="{{ route('home') }}" class="btn btn-warning" title="back"><i class="fa fa-arrow-left"></i></a>
                             <a href="{{ route('info',[$deTailsB->id]) }}" class="btn btn-primary" title="back"><i class="fa fa-edit"></i> Edit</a>
                             <form action="{{ route('deletebook',[$deTailsB->id]) }}" method="POST" class="d-inline">
-                                 @csrf
-                                 @method('delete')
-                                 <button type="submit" onclick="return confirm('Are you sure to delete this book?')" class="btn btn-danger" title="delete"><i class="fa fa-trash"></i></button>
+                                    @csrf
+                                     @method('delete')
+                                    <button type="submit" onclick="return confirm('Are you sure to delete this {{$deTailsB->name}} book?')" class="btn btn-danger" title="delete"><i class="fa fa-trash"></i></button>
                             </form>
                         @endforeach                   
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
