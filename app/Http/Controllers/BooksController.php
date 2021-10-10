@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\Input;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class BooksController extends Controller
 {
@@ -60,7 +60,7 @@ class BooksController extends Controller
     public function updateBook(Request $request, $id){
         
       //  $book = DB::table('books')->where('id',$id);
-        $old = DB::table('books')->where('id',$id)->select('images')->get();
+        $old = DB::table('books')->where('id',$id)->value('images');
         $ChecK = 0;
 
         if($request->file('images')){
@@ -72,11 +72,14 @@ class BooksController extends Controller
         if($request->hasFile('images')){
             $file = $request->file('images');
             $file->move($path, $filename);
-            Storage::delete($old);
+            File::delete($path.'/'.$old);
             $ChecK = 1;
+            echo $filename;
         }
         else {
-            dd('Request Hash No File!');
+            $ChecK = 0;
+           $filename = $old;
+           echo $old;
         }
         $data = [
             'name'=> $request->input('bookName'),
@@ -88,22 +91,23 @@ class BooksController extends Controller
             'readPage'=> $request->input('ReadPage'),
             'finished' => '$pageCount' == '$readPage' ? true : false,
             'reading' => '$readPage' > 0 ? true : false,
-            'updatedAt'=> new DateTime()
+            'updatedAt'=> new DateTime(),
+            'images' => $filename
         ];
         if( $ChecK == 1){
-            $data = ['images' => $filename];
+            //$data = ['images' => $filename];
             DB::table('books')->where('id',$id)->update($data);
             return redirect('home')->with('status', 'update successfully'); 
         }
         else {
-            $data = ['images' => $old];
+           // $data = ['images' => $old];
             DB::table('books')->where('id',$id)->update($data);
             return redirect('home')->with('status', 'Update with old image '); 
         }
     }
     public function deleteBook($id) {
-        $query = DB::table('books')->where('id', $id)->select('images')->get();
-        Storage::delete('Uploads/'.$query);
+        $query = DB::table('books')->where('id', $id)->value('images');
+        File::delete('Uploads/'.$query);
         DB::table('books')->where('id', $id)->delete();
         return redirect('home')->with('status', 'DELETE successfully'); 
     }
